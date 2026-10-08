@@ -43,6 +43,7 @@
 		"@storybook/addon-a11y": "^10.6.0",
 		"@storybook/addon-docs": "^10.6.0",
 		"@storybook/addon-svelte-csf": "latest",
+		"@storybook/addon-themes": "^10.6.1",
 		"@storybook/addon-vitest": "^10.6.0",
 		"@storybook/sveltekit": "^10.6.0",
 		"@sveltejs/adapter-auto": "^7.0.1",
