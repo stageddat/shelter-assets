@@ -21,6 +21,7 @@
 				options: ['default', 'xs', 'sm', 'lg', 'icon', 'icon-xs', 'icon-sm', 'icon-lg']
 			},
 			disabled: { control: 'boolean' },
+			loading: { control: 'boolean' },
 			label: { control: 'text' }
 		},
 		args: {
@@ -47,6 +48,8 @@
 <Story name="Link" args={{ variant: 'link' }} />
 
 <Story name="Disabled" args={{ disabled: true }} />
+
+<Story name="Loading" args={{ loading: true, label: 'Saving' }} />
 
 <Story name="Sizes">
 	{#snippet template({ label, ...args }: Args)}
