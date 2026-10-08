@@ -40,6 +40,7 @@
 	--chart-4: oklch(12.67% 0.023 62.03);
 	--chart-5: oklch(97.18% 0.016 82.79);
 	--radius: 0.625rem;
+	--button-radius: calc(var(--radius) * 0.8);
 	--sidebar: oklch(97.18% 0.016 82.79);
 	--sidebar-foreground: oklch(12.67% 0.023 62.03);
 	--sidebar-primary: oklch(37.56% 0.026 57.38);
@@ -182,6 +183,7 @@
 	--color-card: var(--card);
 	--color-foreground: var(--foreground);
 	--color-background: var(--background);
+	--radius-button: var(--button-radius);
 	--radius-sm: calc(var(--radius) * 0.6);
 	--radius-md: calc(var(--radius) * 0.8);
 	--radius-lg: var(--radius);
