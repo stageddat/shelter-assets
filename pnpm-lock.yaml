@@ -11,9 +11,15 @@ importers:
       cn:
         specifier: ^0.3.2
         version: 0.3.2
+      shadcn-svelte:
+        specifier: ^1.7.0
+        version: 1.7.0(svelte@5.57.1(@typescript-eslint/types@8.70.1))
       tailwind-variants:
         specifier: ^3.3.1
         version: 3.3.1(tailwindcss@4.3.3)
+      tw-animate-css:
+        specifier: ^1.4.0
+        version: 1.4.0
     devDependencies:
       '@chromatic-com/storybook':
         specifier: latest
@@ -99,9 +105,6 @@ importers:
       publint:
         specifier: ^0.3.21
         version: 0.3.24
-      shadcn-svelte:
-        specifier: ^1.7.0
-        version: 1.7.0(svelte@5.57.1(@typescript-eslint/types@8.70.1))
       storybook:
         specifier: ^10.6.0
         version: 10.6.0(@types/react@19.3.0)(prettier@3.9.8)(react@19.3.0)
@@ -114,9 +117,6 @@ importers:
       tailwindcss:
         specifier: ^4.3.0
         version: 4.3.3
-      tw-animate-css:
-        specifier: ^1.4.0
-        version: 1.4.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3

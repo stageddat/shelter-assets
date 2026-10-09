@@ -1,0 +1,6 @@
+/* Design tokens that are not colors; same in every theme (a site can still override them) */
+:root {
+	--radius: 0.625rem;
+	/* per-site/theme override, e.g. 9999px for pill buttons */
+	--button-radius: calc(var(--radius) * 0.8);
+}

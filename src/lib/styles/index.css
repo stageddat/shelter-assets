@@ -1,0 +1,18 @@
+/*
+ * shelter-assets styles. In a site, import it right after Tailwind:
+ *   @import 'tailwindcss';
+ *   @import 'shelter-assets/styles.css';
+ */
+@import 'tw-animate-css';
+@import 'shadcn-svelte/tailwind.css';
+
+@import './fonts.css';
+@import './tokens.css';
+@import './themes/light.css';
+@import './themes/dark.css';
+@import './themes/mocha-lavender.css';
+@import './tailwind.css';
+@import './base.css';
+
+/* Tailwind skips node_modules: scan this library's components so their classes get generated */
+@source '../';
