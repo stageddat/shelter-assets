@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import '../src/routes/layout.css';
 
 import type { Decorator, Preview } from '@storybook/sveltekit';

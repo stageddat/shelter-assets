@@ -18,6 +18,7 @@ export default defineConfig(
 	svelte.configs.recommended,
 	prettier,
 	svelte.configs.prettier,
+	storybook.configs['flat/recommended'],
 	{
 		languageOptions: { globals: { ...globals.browser, ...globals.node } },
 		rules: {
@@ -37,8 +38,9 @@ export default defineConfig(
 		}
 	},
 	{
-		// Override or add rule settings here, such as:
-		// 'svelte/button-has-type': 'error'
-		rules: {}
+		files: ['src/lib/**'],
+		rules: {
+			'svelte/no-navigation-without-resolve': ['error', { ignoreLinks: true }]
+		}
 	}
 );
