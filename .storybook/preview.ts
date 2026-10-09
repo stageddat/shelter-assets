@@ -2,15 +2,15 @@ import '../src/routes/layout.css';
 
 import type { Decorator, Preview } from '@storybook/sveltekit';
 import { DecoratorHelpers } from '@storybook/addon-themes';
-import { applyTheme, defaultThemeId, getTheme, themes } from '../src/lib/themes.js';
+import { applyTheme, defaultThemeId, themes } from '../src/lib/themes.js';
 
-const labels = Object.fromEntries(themes.map((theme) => [theme.label, theme.id]));
-
-DecoratorHelpers.initializeThemeState(Object.keys(labels), getTheme(defaultThemeId).label);
+DecoratorHelpers.initializeThemeState(
+	themes.map((theme) => theme.id),
+	defaultThemeId
+);
 
 const withShelterTheme: Decorator = (story, context) => {
-	const selected = DecoratorHelpers.pluckThemeFromContext(context);
-	applyTheme(labels[selected] ?? defaultThemeId);
+	applyTheme(DecoratorHelpers.pluckThemeFromContext(context) || defaultThemeId);
 	return story();
 };
 

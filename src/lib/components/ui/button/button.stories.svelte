@@ -51,6 +51,19 @@
 
 <Story name="Loading" args={{ loading: true, label: 'Saving' }} />
 
+<Story name="All variants">
+	{#snippet template({ label, ...args }: Args)}
+		<div class="flex flex-wrap items-center gap-2">
+			<Button {...args}>{label}</Button>
+			<Button {...args} variant="outline">Outline</Button>
+			<Button {...args} variant="secondary">Secondary</Button>
+			<Button {...args} variant="ghost">Ghost</Button>
+			<Button {...args} variant="destructive">Destructive</Button>
+			<Button {...args} variant="link">Link</Button>
+		</div>
+	{/snippet}
+</Story>
+
 <Story name="Sizes">
 	{#snippet template({ label, ...args }: Args)}
 		<div class="flex items-center gap-2">
