@@ -10,13 +10,13 @@
 	--primary-foreground: #100f0f;
 	--secondary: #282726;
 	--secondary-foreground: #cecdc3;
-	--muted: #1c1b1a;
-	--muted-foreground: #878580;
-	--accent: #282726;
+	--muted: #282726;
+	--muted-foreground: #9f9d96;
+	--accent: #343331;
 	--accent-foreground: #cecdc3;
 	--selection: #da702c4d;
 	--destructive: #d14d41;
-	--destructive-text: color-mix(in oklch, var(--destructive), white 30%);
+	--destructive-text: oklch(from var(--destructive) calc(l + 0.12) c h);
 	--border: #343331;
 	--input: #343331;
 	--ring: #da702c;
@@ -29,18 +29,19 @@
 	--sidebar-foreground: #cecdc3;
 	--sidebar-primary: #da702c;
 	--sidebar-primary-foreground: #100f0f;
-	--sidebar-accent: #282726;
+	--sidebar-accent: #343331;
 	--sidebar-accent-foreground: #cecdc3;
 	--sidebar-border: #282726;
 	--sidebar-ring: #da702c;
 
 	--green: #879a39;
 	--peach: #da702c;
-	--red: #d14d41;
+	--red: #d95548;
 	--blue: #4385be;
 	--mauve: #8b7ec8;
 	--pink: #ce5d97;
 	--teal: #3aa99f;
-	--sky: #4385be;
+	/* flexoki has no sky: a lighter, cyan-leaning blue so it differs from --blue */
+	--sky: oklch(72% 0.1 230);
 	--yellow: #d0a215;
 }

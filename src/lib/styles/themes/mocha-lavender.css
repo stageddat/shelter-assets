@@ -1,3 +1,4 @@
+/* catppuccin mocha lavender:  https://catppuccin.com/ */
 [data-theme='mocha-lavender'],
 [data-theme='mocha-lavender'].dark {
 	--background: oklch(24% 0.03 284);
@@ -10,10 +11,10 @@
 	--primary-foreground: oklch(24% 0.03 284);
 	--secondary: oklch(40% 0.03 280);
 	--secondary-foreground: oklch(88% 0.04 272);
-	--muted: oklch(48% 0.03 279);
-	--muted-foreground: oklch(69% 0.04 275);
-	--accent: oklch(82% 0.09 277);
-	--accent-foreground: oklch(24% 0.03 284);
+	--muted: oklch(38% 0.03 279);
+	--muted-foreground: oklch(76% 0.04 275);
+	--accent: oklch(40% 0.03 280);
+	--accent-foreground: oklch(88% 0.04 272);
 	--selection: oklch(82% 0.09 277 / 30%);
 	--border: oklch(40% 0.03 280);
 	--input: oklch(40% 0.03 280);
