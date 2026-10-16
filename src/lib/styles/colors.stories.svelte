@@ -94,7 +94,8 @@
 	let version = $state(0);
 	onMount(() => {
 		const observer = new MutationObserver(() => version++);
-		observer.observe(document.documentElement, {
+		observer.observe(document.body, {
+			subtree: true,
 			attributes: true,
 			attributeFilter: ['class', 'data-theme']
 		});
@@ -104,7 +105,8 @@
 	function value(token: string) {
 		void version;
 		if (typeof document === 'undefined') return '';
-		return getComputedStyle(document.documentElement).getPropertyValue(`--${token}`).trim();
+		const themed = document.querySelector('.shelter-theme') ?? document.documentElement;
+		return getComputedStyle(themed).getPropertyValue(`--${token}`).trim();
 	}
 
 	function rgb(color: string): [number, number, number] | null {

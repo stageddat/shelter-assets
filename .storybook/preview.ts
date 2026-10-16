@@ -3,21 +3,27 @@ import '../src/routes/layout.css';
 
 import type { Decorator, Preview } from '@storybook/sveltekit';
 import { DecoratorHelpers } from '@storybook/addon-themes';
-import { applyTheme, defaultThemeId, themes } from '../src/lib/themes.js';
+import { defaultThemeId, themes } from '../src/lib/themes.js';
+import ThemeWrapper from './ThemeWrapper.svelte';
 
 DecoratorHelpers.initializeThemeState(
 	themes.map((theme) => theme.id),
 	defaultThemeId
 );
 
-const withShelterTheme: Decorator = (story, context) => {
-	applyTheme(DecoratorHelpers.pluckThemeFromContext(context) || defaultThemeId);
-	return story();
-};
+// poner el tema dentro de cada cajita
+const withShelterTheme: Decorator = (_story, context) => ({
+	Component: ThemeWrapper,
+	props: {
+		theme: DecoratorHelpers.pluckThemeFromContext(context) || defaultThemeId,
+		fill: context.viewMode === 'story'
+	}
+});
 
 const preview: Preview = {
 	decorators: [withShelterTheme],
 	parameters: {
+		layout: 'fullscreen',
 		controls: {
 			matchers: {
 				color: /(background|color)$/i,
