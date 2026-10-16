@@ -1,0 +1,44 @@
+@utility link {
+	color: var(--primary);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.2em;
+
+	&:hover {
+		text-decoration-thickness: 2px;
+	}
+}
+
+@utility inline-code {
+	font-family: var(--font-mono);
+	font-size: 0.875em;
+	background: var(--muted);
+	border-radius: 0.3em;
+	padding: 0.1em 0.35em;
+}
+
+@utility code-block {
+	display: block;
+	font-family: var(--font-mono);
+	font-size: 0.875em;
+	line-height: 1.6;
+	background: var(--muted);
+	border-radius: var(--radius);
+	padding: 0.9em 1.1em;
+	overflow-x: auto;
+	white-space: pre;
+}
+
+@utility highlight {
+	background: var(--selection);
+	color: inherit;
+	border-radius: 0.2em;
+	padding-inline: 0.15em;
+}
+
+@utility quote {
+	border-left: 3px solid var(--border);
+	padding-left: 1em;
+	color: var(--muted-foreground);
+	font-style: italic;
+}
