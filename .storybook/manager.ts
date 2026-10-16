@@ -5,7 +5,7 @@ import { create } from 'storybook/theming';
 addons.setConfig({
 	theme: create({
 		base: 'dark',
-		brandTitle: 'shelter design',
+		brandTitle: 'Shelter Design',
 		brandUrl: 'https://shelter.cat',
 		brandTarget: '_blank'
 	})
