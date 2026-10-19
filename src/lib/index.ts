@@ -1,4 +1,6 @@
 export * from './themes.js';
+export * from './theme-preference.js';
+export * from './font-loading.js';
 
 export {
 	Button,

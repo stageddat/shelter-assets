@@ -29,6 +29,20 @@ export default defineConfig({
 	test: {
 		projects: [
 			{
+				// unit tests (*.test.ts) run in a real browser too, for localStorage, matchMedia...
+				extends: true,
+				test: {
+					name: 'unit',
+					include: ['src/**/*.test.ts'],
+					browser: {
+						enabled: true,
+						headless: true,
+						provider: playwright({}),
+						instances: [{ browser: 'chromium' }]
+					}
+				}
+			},
+			{
 				extends: true,
 				plugins: [
 					// The plugin will run tests for the stories defined in your Storybook config

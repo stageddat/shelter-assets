@@ -12,7 +12,8 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build"
+		"build-storybook": "storybook build",
+		"test": "vitest run --project unit"
 	},
 	"files": [
 		"dist",
@@ -31,7 +32,8 @@
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js"
 		},
-		"./styles.css": "./dist/styles/index.css"
+		"./styles.css": "./dist/styles/index.css",
+		"./fonts/*": "./dist/fonts/*"
 	},
 	"peerDependencies": {
 		"svelte": "^5.0.0"
