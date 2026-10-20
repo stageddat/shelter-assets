@@ -13,9 +13,9 @@ export type Theme = {
 };
 
 export const themes = [
-	{ id: 'light', label: 'Light', scheme: 'light', dataTheme: '' },
-	{ id: 'dark', label: 'Dark', scheme: 'dark', dataTheme: '' },
-	{ id: 'mocha-lavender', label: 'Mocha Lavender', scheme: 'dark', dataTheme: 'mocha-lavender' }
+	{ id: 'light', label: 'light', scheme: 'light', dataTheme: '' },
+	{ id: 'dark', label: 'dark', scheme: 'dark', dataTheme: '' },
+	{ id: 'mocha-lavender', label: 'mocha lavender', scheme: 'dark', dataTheme: 'mocha-lavender' }
 ] as const satisfies readonly Theme[];
 
 export type ThemeId = (typeof themes)[number]['id'];

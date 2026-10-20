@@ -49,7 +49,7 @@ describe('ThemeSelector', () => {
 
 		expect(isChecked('mocha-lavender')).toBe(true);
 		expect(isChecked('system')).toBe(false);
-		expect(visibleLabels()).toEqual(['Mocha Lavender']);
+		expect(visibleLabels()).toEqual(['mocha lavender']);
 	});
 
 	it('uses the translated labels it is given', () => {
@@ -89,7 +89,7 @@ describe('ThemeSelector', () => {
 	it('is a menu button for screen readers', () => {
 		renderSelector();
 		expect(button().getAttribute('aria-haspopup')).toBe('menu');
-		expect(document.querySelector('[role="menu"]')!.getAttribute('aria-label')).toBe('Theme');
+		expect(document.querySelector('[role="menu"]')!.getAttribute('aria-label')).toBe('theme');
 		expect(option('dark').getAttribute('role')).toBe('menuitemradio');
 	});
 

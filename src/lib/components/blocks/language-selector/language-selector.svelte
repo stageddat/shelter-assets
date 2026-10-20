@@ -60,7 +60,7 @@
 <Popover {align} class={className} panelClass="w-56">
 	{#snippet trigger()}
 		<Languages />
-		<span class="sr-only">{labels.language ?? 'Language'}:</span>
+		<span class="sr-only">{labels.language ?? 'language'}:</span>
 		<span lang={current}>{currentLabel}</span>
 	{/snippet}
 

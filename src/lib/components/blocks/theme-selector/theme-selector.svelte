@@ -5,7 +5,7 @@
 	export type ThemeSelectorProps = {
 		/** Translated name of each option; missing ones use the English name */
 		labels?: Partial<Record<ThemePreference, string>>;
-		/** Translated name of the control, for screen readers ("Theme") */
+		/** Translated name of the control, for screen readers ("theme") */
 		label?: string;
 		align?: PopoverAlign;
 		class?: string;
@@ -22,13 +22,13 @@
 
 	let {
 		labels = {},
-		label = 'Theme',
+		label = 'theme',
 		align = 'end',
 		class: className
 	}: ThemeSelectorProps = $props();
 
 	function nameOf(preference: ThemePreference) {
-		return labels[preference] ?? (preference === 'system' ? 'System' : getTheme(preference).label);
+		return labels[preference] ?? (preference === 'system' ? 'system' : getTheme(preference).label);
 	}
 
 	// The HTML is the same for everyone (the landing is built once), but each visitor has their own
