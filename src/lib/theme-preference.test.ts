@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { applyTheme, themes } from './themes.js';
+import { themes } from './themes.js';
 import {
 	applyThemePreference,
 	getThemePreference,
@@ -16,7 +16,8 @@ function rootState() {
 	return {
 		dark: root.classList.contains('dark'),
 		dataTheme: root.dataset.theme,
-		colorScheme: root.style.colorScheme
+		colorScheme: root.style.colorScheme,
+		preference: root.dataset.themePreference
 	};
 }
 
@@ -24,6 +25,7 @@ function resetRoot() {
 	root.classList.remove('dark');
 	delete root.dataset.theme;
 	root.style.colorScheme = '';
+	delete root.dataset.themePreference;
 }
 
 function runInitScript() {
@@ -80,38 +82,59 @@ describe('setThemePreference', () => {
 	it('saves the preference and applies the theme', () => {
 		setThemePreference('mocha-lavender', { transition: 'instant' });
 		expect(localStorage.getItem(themeStorageKey)).toBe('mocha-lavender');
-		expect(rootState()).toEqual({ dark: true, dataTheme: 'mocha-lavender', colorScheme: 'dark' });
+		expect(rootState()).toEqual({
+			dark: true,
+			dataTheme: 'mocha-lavender',
+			colorScheme: 'dark',
+			preference: 'mocha-lavender'
+		});
 	});
 
 	it('removes the previous data-theme when switching to a base theme', () => {
 		setThemePreference('mocha-lavender', { transition: 'instant' });
 		setThemePreference('light', { transition: 'instant' });
-		expect(rootState()).toEqual({ dark: false, dataTheme: undefined, colorScheme: 'light' });
+		expect(rootState()).toEqual({
+			dark: false,
+			dataTheme: undefined,
+			colorScheme: 'light',
+			preference: 'light'
+		});
 	});
 
 	it('resolves "system" with the OS setting', () => {
 		mockSystemDark(true);
 		setThemePreference('system', { transition: 'instant' });
 		expect(rootState().dark).toBe(true);
+		// the preference stays 'system', not the theme it resolved to
+		expect(rootState().preference).toBe('system');
 	});
 });
 
 describe('themeInitScript', () => {
 	// the inline script has its own copy of the logic, so it must give the same result
-	it.each(themes.map((theme) => theme.id))('applies "%s" exactly like applyTheme', (id) => {
-		applyTheme(id);
-		const expected = rootState();
-		resetRoot();
+	it.each(['system', ...themes.map((theme) => theme.id)] as const)(
+		'applies "%s" exactly like applyThemePreference',
+		(preference) => {
+			mockSystemDark(true);
+			applyThemePreference(preference);
+			const expected = rootState();
+			resetRoot();
 
-		localStorage.setItem(themeStorageKey, id);
-		runInitScript();
-		expect(rootState()).toEqual(expected);
-	});
+			localStorage.setItem(themeStorageKey, preference);
+			runInitScript();
+			expect(rootState()).toEqual(expected);
+		}
+	);
 
 	it('follows the system when nothing is saved', () => {
 		mockSystemDark(true);
 		runInitScript();
-		expect(rootState()).toEqual({ dark: true, dataTheme: undefined, colorScheme: 'dark' });
+		expect(rootState()).toEqual({
+			dark: true,
+			dataTheme: undefined,
+			colorScheme: 'dark',
+			preference: 'system'
+		});
 	});
 
 	it('ignores unknown and tricky saved values', () => {
@@ -120,6 +143,7 @@ describe('themeInitScript', () => {
 			localStorage.setItem(themeStorageKey, value);
 			expect(runInitScript).not.toThrow();
 			expect(rootState().colorScheme).toBe('light');
+			expect(rootState().preference).toBe('system');
 		}
 	});
 

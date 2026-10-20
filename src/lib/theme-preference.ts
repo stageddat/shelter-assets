@@ -11,6 +11,12 @@ export type ThemePreference = ThemeId | 'system';
 
 export const defaultThemePreference: ThemePreference = 'system';
 
+/** Every preference a user can pick, in the order a selector shows them */
+export const themePreferences: readonly ThemePreference[] = [
+	'system',
+	...themes.map((theme) => theme.id)
+];
+
 const darkQuery = '(prefers-color-scheme: dark)';
 
 export function isThemePreference(value: unknown): value is ThemePreference {
@@ -49,19 +55,30 @@ export function setThemePreference(
 	applyThemePreference(preference, transition);
 }
 
-/** Applies a preference to the page without saving it */
+/**
+ * Applies a preference to the page without saving it.
+ * Besides the theme, `<html data-theme-preference>` holds the preference itself ('system' included),
+ * so CSS can mark the chosen option in a theme selector from the first frame, without waiting for JS.
+ */
 export function applyThemePreference(
 	preference: ThemePreference,
 	transition: ThemeTransition = 'instant'
 ) {
 	const theme = resolveThemePreference(preference, matchMedia(darkQuery).matches);
-	const apply = () => withoutCssTransitions(() => applyTheme(theme));
+	const root = document.documentElement;
+	const apply = () =>
+		withoutCssTransitions(() => {
+			applyTheme(theme, root);
+			root.dataset.themePreference = preference;
+		});
 
 	const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 	if (transition === 'fade' && !reducedMotion && document.startViewTransition) {
 		// the browser crossfades a snapshot of the old page into the new one,
 		// so everything changes at the same pace
-		document.startViewTransition(apply);
+		// a quick second change skips this fade and rejects `ready`; the theme still applies,
+		// so that's not an error (otherwise it shows up as an unhandled rejection)
+		document.startViewTransition(apply).ready.catch(() => {});
 	} else {
 		apply();
 	}
@@ -112,7 +129,7 @@ function withoutCssTransitions(change: () => void) {
 // Same as applyThemePreference(getThemePreference()), as a tiny standalone script for <head>.
 // It must run before the page is painted, so the first frame already has the right theme
 // (otherwise dark themes flash white on load). It can't import anything, so the theme list
-// is written into it here, and theme-preference.test.ts checks it matches applyTheme.
+// is written into it here, and theme-preference.test.ts checks it matches applyThemePreference.
 const themeData = Object.fromEntries(
 	themes.map((theme) => [theme.id, [theme.scheme, theme.dataTheme]])
 );
@@ -122,10 +139,12 @@ export const themeInitScript = `(function () {
 	var themes = ${JSON.stringify(themeData)};
 	var preference = null;
 	try { preference = localStorage.getItem(${JSON.stringify(themeStorageKey)}); } catch (e) {}
-	var id = Object.prototype.hasOwnProperty.call(themes, preference)
+	if (!Object.prototype.hasOwnProperty.call(themes, preference)) preference = 'system';
+	var id = preference !== 'system'
 		? preference
 		: matchMedia(${JSON.stringify(darkQuery)}).matches ? 'dark' : 'light';
 	var root = document.documentElement;
+	root.dataset.themePreference = preference;
 	root.classList.toggle('dark', themes[id][0] === 'dark');
 	root.style.colorScheme = themes[id][0];
 	if (themes[id][1]) root.dataset.theme = themes[id][1];
