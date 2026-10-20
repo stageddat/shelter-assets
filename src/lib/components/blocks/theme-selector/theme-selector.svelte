@@ -54,7 +54,7 @@
 <!-- eslint-disable-next-line svelte/no-at-html-tags -- built above from the theme list, no user input -->
 {@html `<style>${selectedStyles}</style>`}
 
-<Popover {align} class={className}>
+<Popover haspopup="menu" {align} class={className}>
 	{#snippet trigger()}
 		<Palette />
 		<span class="sr-only">{label}:</span>
@@ -63,12 +63,16 @@
 		{/each}
 	{/snippet}
 
-	<div role="group" aria-label={label} class="flex flex-col">
+	<!-- keyboard (arrows, Home/End, Tab) and aria-checked come from initThemeSelectors -->
+	<div role="menu" aria-label={label} data-theme-menu class="flex flex-col">
 		{#each themePreferences as preference (preference)}
 			<button
 				type="button"
+				role="menuitemradio"
+				aria-checked="false"
+				tabindex="-1"
 				data-theme-option={preference}
-				class="flex items-center gap-2 rounded-sm px-3 py-2 text-left hover:bg-accent"
+				class="flex items-center gap-2 rounded-sm px-3 py-2 text-left outline-none hover:bg-accent focus-visible:bg-accent"
 			>
 				<Check data-theme-check aria-hidden="true" class="size-4" />
 				{nameOf(preference)}

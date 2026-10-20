@@ -1,20 +1,27 @@
-// The only JavaScript a ThemeSelector needs: picking an option. Plain DOM code, so the same
-// function works in a Svelte app and on a static page (Astro renders the selector to HTML with
-// no Svelte in the browser). Which option looks selected is CSS (see theme-selector.svelte),
-// so it is right from the first frame, before this runs.
+// The only JavaScript a ThemeSelector needs: picking an option and moving around the menu with
+// the keyboard. Plain DOM code, so the same function works in a Svelte app and on a static page
+// (Astro renders the selector to HTML with no Svelte in the browser). Which option looks selected
+// is CSS (see theme-selector.svelte), so it is right from the first frame, before this runs.
+//
+// Keyboard follows the WAI-ARIA menu button pattern: opening moves focus to the checked option,
+// arrows move it (and wrap), Home/End jump to the ends, Tab closes the menu. Escape and the click
+// outside are the browser's (Popover API), which also gives focus back to the button.
 
 import { isThemePreference, setThemePreference } from '../../../theme-preference.js';
 
+const menuSelector = '[data-theme-menu]';
 const optionSelector = '[data-theme-option]';
 
 let stop: (() => void) | undefined;
 
-// screen readers can't see the CSS check mark, so the state also goes in aria-pressed
-function syncPressed() {
+const optionsOf = (menu: Element) => [...menu.querySelectorAll<HTMLElement>(optionSelector)];
+
+// screen readers can't see the CSS check mark, so the state also goes in aria-checked
+function syncChecked() {
 	const current = document.documentElement.dataset.themePreference;
 	for (const option of document.querySelectorAll(optionSelector)) {
 		option.setAttribute(
-			'aria-pressed',
+			'aria-checked',
 			String(option.getAttribute('data-theme-option') === current)
 		);
 	}
@@ -29,22 +36,60 @@ function onClick(event: MouseEvent) {
 	setThemePreference(preference);
 }
 
+// `toggle` doesn't bubble: this listens in the capture phase
+function onToggle(event: Event) {
+	if (!(event instanceof ToggleEvent) || event.newState !== 'open') return;
+	const menu = event.target instanceof Element ? event.target.querySelector(menuSelector) : null;
+	if (!menu) return;
+	const options = optionsOf(menu);
+	(options.find((option) => option.ariaChecked === 'true') ?? options[0])?.focus();
+}
+
+const moves: Record<string, (index: number, count: number) => number> = {
+	ArrowDown: (index, count) => (index + 1) % count,
+	ArrowUp: (index, count) => (index - 1 + count) % count,
+	Home: () => 0,
+	End: (_, count) => count - 1
+};
+
+function onKeydown(event: KeyboardEvent) {
+	const option = event.target instanceof HTMLElement ? event.target.closest(optionSelector) : null;
+	const menu = option?.closest(menuSelector);
+	if (!option || !menu) return;
+
+	if (event.key === 'Tab') {
+		// focus goes back to the button, and Tab carries on from there
+		option.closest<HTMLElement>('[popover]')?.hidePopover();
+		return;
+	}
+
+	const move = moves[event.key];
+	if (!move) return;
+	event.preventDefault();
+	const options = optionsOf(menu);
+	options[move(options.indexOf(option as HTMLElement), options.length)]?.focus();
+}
+
 /**
- * Makes every ThemeSelector on the page work, including ones added later (one listener on the
+ * Makes every ThemeSelector on the page work, including ones added later (listeners on the
  * document). Safe to call more than once. Returns a function that stops it (for tests).
  */
 export function initThemeSelectors() {
-	syncPressed();
+	syncChecked();
 	if (stop) return stop;
 
 	// the preference can also change from another tab or the OS (watchThemePreference)
-	const observer = new MutationObserver(syncPressed);
+	const observer = new MutationObserver(syncChecked);
 	observer.observe(document.documentElement, { attributeFilter: ['data-theme-preference'] });
 	document.addEventListener('click', onClick);
+	document.addEventListener('keydown', onKeydown);
+	document.addEventListener('toggle', onToggle, true);
 
 	stop = () => {
 		observer.disconnect();
 		document.removeEventListener('click', onClick);
+		document.removeEventListener('keydown', onKeydown);
+		document.removeEventListener('toggle', onToggle, true);
 		stop = undefined;
 	};
 	return stop;

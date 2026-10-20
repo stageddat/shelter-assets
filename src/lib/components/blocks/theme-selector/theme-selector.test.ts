@@ -14,6 +14,11 @@ function renderSelector() {
 
 const option = (preference: string) =>
 	document.querySelector<HTMLButtonElement>(`[data-theme-option="${preference}"]`)!;
+const options = () => [...document.querySelectorAll<HTMLElement>('[data-theme-option]')];
+const panel = () => document.querySelector<HTMLElement>('[popover]')!;
+const button = () => document.querySelector<HTMLElement>('[popovertarget]')!;
+const press = (key: string) =>
+	document.activeElement!.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
 const isChecked = (preference: string) =>
 	getComputedStyle(option(preference).querySelector('[data-theme-check]')!).visibility ===
 	'visible';
@@ -65,20 +70,63 @@ describe('ThemeSelector', () => {
 
 	it('closes the menu after picking', () => {
 		renderSelector();
-		const panel = document.querySelector<HTMLElement>('[popover]')!;
-		panel.showPopover();
+		panel().showPopover();
 		option('light').click();
-		expect(panel.matches(':popover-open')).toBe(false);
+		expect(panel().matches(':popover-open')).toBe(false);
 	});
 
-	it('keeps aria-pressed in sync for screen readers', async () => {
+	it('keeps aria-checked in sync for screen readers', async () => {
 		renderSelector();
 		option('dark').click();
-		await vi.waitFor(() => expect(option('dark').getAttribute('aria-pressed')).toBe('true'));
-		expect(option('light').getAttribute('aria-pressed')).toBe('false');
+		await vi.waitFor(() => expect(option('dark').getAttribute('aria-checked')).toBe('true'));
+		expect(option('light').getAttribute('aria-checked')).toBe('false');
 
 		// changed from elsewhere (another tab, watchThemePreference): the observer catches it
 		root.dataset.themePreference = 'light';
-		await vi.waitFor(() => expect(option('light').getAttribute('aria-pressed')).toBe('true'));
+		await vi.waitFor(() => expect(option('light').getAttribute('aria-checked')).toBe('true'));
+	});
+
+	it('is a menu button for screen readers', () => {
+		renderSelector();
+		expect(button().getAttribute('aria-haspopup')).toBe('menu');
+		expect(document.querySelector('[role="menu"]')!.getAttribute('aria-label')).toBe('Theme');
+		expect(option('dark').getAttribute('role')).toBe('menuitemradio');
+	});
+
+	describe('keyboard', () => {
+		it('opening focuses the checked option', async () => {
+			root.dataset.themePreference = 'dark';
+			renderSelector();
+			panel().showPopover();
+			await vi.waitFor(() => expect(document.activeElement).toBe(option('dark')));
+		});
+
+		it('arrows move between options and wrap; Home and End jump to the ends', async () => {
+			root.dataset.themePreference = 'system';
+			renderSelector();
+			panel().showPopover();
+			await vi.waitFor(() => expect(document.activeElement).toBe(option('system')));
+			const [first, second] = options();
+			const last = options().at(-1);
+
+			press('ArrowDown');
+			expect(document.activeElement).toBe(second);
+			press('End');
+			expect(document.activeElement).toBe(last);
+			press('ArrowDown');
+			expect(document.activeElement).toBe(first);
+			press('ArrowUp');
+			expect(document.activeElement).toBe(last);
+			press('Home');
+			expect(document.activeElement).toBe(first);
+		});
+
+		it('Tab closes the menu', async () => {
+			renderSelector();
+			panel().showPopover();
+			await vi.waitFor(() => expect(document.activeElement).toBe(options()[0]));
+			press('Tab');
+			expect(panel().matches(':popover-open')).toBe(false);
+		});
 	});
 });

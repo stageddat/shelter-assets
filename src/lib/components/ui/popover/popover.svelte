@@ -13,6 +13,8 @@
 		trigger: Snippet;
 		/** Content of the panel */
 		children: Snippet;
+		/** What the panel is, for screen readers (`aria-haspopup` on the button), e.g. `menu` */
+		haspopup?: 'menu' | 'listbox' | 'dialog';
 		/** Which edge of the button the panel lines up with */
 		align?: PopoverAlign;
 		class?: string;
@@ -24,7 +26,14 @@
 	import { cn } from '$lib/utils.js';
 	import { Button } from '../button/index.js';
 
-	let { trigger, children, align = 'end', class: className, panelClass }: PopoverProps = $props();
+	let {
+		trigger,
+		children,
+		haspopup,
+		align = 'end',
+		class: className,
+		panelClass
+	}: PopoverProps = $props();
 
 	// unique per instance and the same in the server HTML and in the browser
 	const id = $props.id();
@@ -33,7 +42,12 @@
 </script>
 
 <div class={cn('popover-root', className)}>
-	<Button variant="outline" popovertarget={panelId} style="anchor-name: {anchorName}">
+	<Button
+		variant="outline"
+		popovertarget={panelId}
+		aria-haspopup={haspopup}
+		style="anchor-name: {anchorName}"
+	>
 		{@render trigger()}
 	</Button>
 	<div

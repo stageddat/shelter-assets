@@ -53,4 +53,12 @@ describe('LanguageSelector', () => {
 			'official translations'
 		]);
 	});
+
+	it('names each list with its group title, for screen readers', () => {
+		renderSelector();
+		const names = [...document.querySelectorAll('ul')].map(
+			(list) => document.getElementById(list.getAttribute('aria-labelledby')!)?.textContent
+		);
+		expect(names).toEqual(['official translations', 'community translations']);
+	});
 });

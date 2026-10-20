@@ -51,6 +51,9 @@
 			}
 		].filter((group) => group.items.length > 0)
 	);
+	// unique per instance and the same in the server HTML and in the browser
+	const id = $props.id();
+
 	const currentLabel = $derived(languages.find((l) => l.locale === current)?.label ?? current);
 </script>
 
@@ -61,9 +64,10 @@
 		<span lang={current}>{currentLabel}</span>
 	{/snippet}
 
-	{#each groups as group (group.title)}
-		<p class="px-3 pt-2 pb-1 text-xs text-muted-foreground">{group.title}</p>
-		<ul class="mb-1">
+	{#each groups as group, i (group.title)}
+		<!-- the title names its list for screen readers ("official translations, list, 3 items") -->
+		<p id="{id}-group-{i}" class="px-3 pt-2 pb-1 text-xs text-muted-foreground">{group.title}</p>
+		<ul aria-labelledby="{id}-group-{i}" class="mb-1">
 			{#each group.items as language (language.locale)}
 				<li>
 					<a
