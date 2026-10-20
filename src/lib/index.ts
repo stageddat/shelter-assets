@@ -9,3 +9,14 @@ export {
 	type ButtonSize,
 	type ButtonVariant
 } from './components/ui/button/index.js';
+
+export {
+	initThemeSelectors,
+	ThemeSelector,
+	type ThemeSelectorProps
+} from './components/blocks/theme-selector/index.js';
+export {
+	LanguageSelector,
+	type LanguageOption,
+	type LanguageSelectorProps
+} from './components/blocks/language-selector/index.js';
