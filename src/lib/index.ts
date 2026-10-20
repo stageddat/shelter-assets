@@ -9,6 +9,17 @@ export {
 	type ButtonSize,
 	type ButtonVariant
 } from './components/ui/button/index.js';
+export {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+	type AccordionContentProps,
+	type AccordionItemProps,
+	type AccordionProps,
+	type AccordionTriggerProps,
+	type AccordionType
+} from './components/ui/accordion/index.js';
 
 export {
 	initThemeSelectors,
