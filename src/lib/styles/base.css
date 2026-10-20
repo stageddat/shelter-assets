@@ -8,6 +8,11 @@
 	html {
 		@apply font-sans;
 	}
+	/* Tailwind 4 leaves buttons with the default arrow; show the hand, like on links */
+	button:not(:disabled),
+	[role='button']:not(:disabled) {
+		cursor: pointer;
+	}
 	h1 {
 		@apply text-h1;
 	}
