@@ -16,14 +16,15 @@ let stop: (() => void) | undefined;
 
 const optionsOf = (menu: Element) => [...menu.querySelectorAll<HTMLElement>(optionSelector)];
 
-// screen readers can't see the CSS check mark, so the state also goes in aria-checked
+// screen readers can't see the CSS check mark, so the state also goes in aria-checked. The
+// checked option is also the one Tab reaches (the inline variant is a radio group; in the
+// popover menu focus is moved by onToggle instead)
 function syncChecked() {
 	const current = document.documentElement.dataset.themePreference;
 	for (const option of document.querySelectorAll(optionSelector)) {
-		option.setAttribute(
-			'aria-checked',
-			String(option.getAttribute('data-theme-option') === current)
-		);
+		const checked = option.getAttribute('data-theme-option') === current;
+		option.setAttribute('aria-checked', String(checked));
+		option.setAttribute('tabindex', checked ? '0' : '-1');
 	}
 }
 
@@ -33,13 +34,18 @@ function onClick(event: MouseEvent) {
 	if (!option || !isThemePreference(preference)) return;
 	// close the menu first, so the theme fade doesn't capture it open
 	option.closest<HTMLElement>('[popover]')?.hidePopover();
+	const inline = option.closest('details');
+	if (inline) inline.open = false;
 	setThemePreference(preference);
 }
 
+// opening the popover menu moves focus into it (menu button pattern). Only popovers: the inline
+// variant's <details> also fires `toggle`, but there focus stays on its button.
 // `toggle` doesn't bubble: this listens in the capture phase
 function onToggle(event: Event) {
 	if (!(event instanceof ToggleEvent) || event.newState !== 'open') return;
-	const menu = event.target instanceof Element ? event.target.querySelector(menuSelector) : null;
+	const popover = event.target instanceof HTMLElement && event.target.popover ? event.target : null;
+	const menu = popover?.querySelector(menuSelector);
 	if (!menu) return;
 	const options = optionsOf(menu);
 	(options.find((option) => option.ariaChecked === 'true') ?? options[0])?.focus();

@@ -129,4 +129,45 @@ describe('ThemeSelector', () => {
 			expect(panel().matches(':popover-open')).toBe(false);
 		});
 	});
+
+	describe('inline variant', () => {
+		function renderInline() {
+			component = mount(ThemeSelector, { target: document.body, props: { variant: 'inline' } });
+			flushSync();
+		}
+
+		it('unfolds in place (a <details>) as a radio group, with no popover', () => {
+			renderInline();
+			expect(document.querySelector('[popover]')).toBeNull();
+			expect(document.querySelector('details')).not.toBeNull();
+			expect(document.querySelector('[role="radiogroup"]')!.getAttribute('aria-label')).toBe(
+				'theme'
+			);
+			expect(option('dark').getAttribute('role')).toBe('radio');
+		});
+
+		it('applies the clicked option and folds back', async () => {
+			renderInline();
+			const details = document.querySelector('details')!;
+			details.open = true;
+			option('dark').click();
+
+			expect(details.open).toBe(false);
+			await vi.waitFor(() => expect(root.classList.contains('dark')).toBe(true));
+			expect(option('dark').getAttribute('aria-checked')).toBe('true');
+		});
+
+		it('Tab reaches the checked option (radio group), and focus stays put on open', async () => {
+			root.dataset.themePreference = 'light';
+			renderInline();
+			initThemeSelectors();
+			expect(options().map((o) => o.tabIndex)).toEqual([-1, 0, -1, -1]);
+
+			const summary = document.querySelector('summary')!;
+			summary.focus();
+			summary.click();
+			await new Promise((resolve) => setTimeout(resolve, 50));
+			expect(document.activeElement).toBe(summary);
+		});
+	});
 });

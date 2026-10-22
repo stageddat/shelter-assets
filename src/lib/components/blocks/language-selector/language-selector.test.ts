@@ -61,4 +61,16 @@ describe('LanguageSelector', () => {
 		);
 		expect(names).toEqual(['official translations', 'community translations']);
 	});
+
+	it('inline variant: the same links unfold in place, with no popover', () => {
+		component = mount(LanguageSelector, {
+			target: document.body,
+			props: { current: 'ca', languages, variant: 'inline' }
+		});
+		flushSync();
+		expect(document.querySelector('[popover]')).toBeNull();
+		const details = document.querySelector('details')!;
+		expect(details.querySelector('summary')?.textContent).toContain('català');
+		expect([...details.querySelectorAll('a')].map((link) => link.lang)).toEqual(['en', 'ca', 'es']);
+	});
 });

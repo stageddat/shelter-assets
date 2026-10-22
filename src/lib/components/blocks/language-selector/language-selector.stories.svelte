@@ -18,6 +18,7 @@
 		args: { current: 'en', languages },
 		argTypes: {
 			current: { control: 'select', options: languages.map((l) => l.locale) },
+			variant: { control: 'inline-radio', options: ['popover', 'inline'] },
 			align: { control: 'inline-radio', options: ['start', 'end'] }
 		}
 	});
@@ -44,3 +45,9 @@
 		}
 	}}
 />
+
+<Story name="Inline (mobile menu)" args={{ variant: 'inline' }}>
+	{#snippet template(args: LanguageSelectorProps)}
+		<div class="flex max-w-xs flex-col gap-2 p-4"><LanguageSelector {...args} /></div>
+	{/snippet}
+</Story>

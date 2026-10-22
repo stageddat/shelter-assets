@@ -7,6 +7,12 @@
 		labels?: Partial<Record<ThemePreference, string>>;
 		/** Translated name of the control, for screen readers ("theme") */
 		label?: string;
+		/**
+		 * `popover`: a button that opens a floating menu. `inline`: the options unfold in place,
+		 * pushing what's below (e.g. inside a mobile menu); takes the full width it's given
+		 */
+		variant?: 'popover' | 'inline';
+		/** Which edge of the button the menu lines up with (`popover` only) */
 		align?: PopoverAlign;
 		class?: string;
 	};
@@ -17,12 +23,15 @@
 	import Palette from '@lucide/svelte/icons/palette';
 	import { themePreferences } from '../../../theme-preference.js';
 	import { getTheme } from '../../../themes.js';
+	import { cn } from '$lib/utils.js';
+	import { AccordionContent, AccordionItem, AccordionTrigger } from '../../ui/accordion/index.js';
 	import { Popover } from '../../ui/popover/index.js';
 	import { initThemeSelectors } from './init-theme-selectors.js';
 
 	let {
 		labels = {},
 		label = 'theme',
+		variant = 'popover',
 		align = 'end',
 		class: className
 	}: ThemeSelectorProps = $props();
@@ -54,21 +63,26 @@
 <!-- eslint-disable-next-line svelte/no-at-html-tags -- built above from the theme list, no user input -->
 {@html `<style>${selectedStyles}</style>`}
 
-<Popover haspopup="menu" {align} class={className}>
-	{#snippet trigger()}
-		<Palette />
-		<span class="sr-only">{label}:</span>
-		{#each themePreferences as preference (preference)}
-			<span data-theme-label={preference}>{nameOf(preference)}</span>
-		{/each}
-	{/snippet}
+{#snippet current()}
+	<Palette />
+	<span class="sr-only">{label}:</span>
+	{#each themePreferences as preference (preference)}
+		<span data-theme-label={preference}>{nameOf(preference)}</span>
+	{/each}
+{/snippet}
 
-	<!-- keyboard (arrows, Home/End, Tab) and aria-checked come from initThemeSelectors -->
-	<div role="menu" aria-label={label} data-theme-menu class="flex flex-col">
+<!-- keyboard (arrows, Home/End, Tab) and aria-checked come from initThemeSelectors -->
+{#snippet options(inline: boolean)}
+	<div
+		role={inline ? 'radiogroup' : 'menu'}
+		aria-label={label}
+		data-theme-menu
+		class="flex flex-col"
+	>
 		{#each themePreferences as preference (preference)}
 			<button
 				type="button"
-				role="menuitemradio"
+				role={inline ? 'radio' : 'menuitemradio'}
 				aria-checked="false"
 				tabindex="-1"
 				data-theme-option={preference}
@@ -79,4 +93,22 @@
 			</button>
 		{/each}
 	</div>
-</Popover>
+{/snippet}
+
+{#if variant === 'inline'}
+	<AccordionItem class={cn('w-full rounded-button border px-3', className)}>
+		<AccordionTrigger
+			class="items-center gap-2 py-2.5 text-base hover:no-underline [&_svg:not([data-slot])]:size-4"
+		>
+			<span class="flex items-center gap-2">{@render current()}</span>
+		</AccordionTrigger>
+		<AccordionContent class="pb-2 text-base">{@render options(true)}</AccordionContent>
+	</AccordionItem>
+{:else}
+	<Popover haspopup="menu" {align} class={className}>
+		{#snippet trigger()}
+			{@render current()}
+		{/snippet}
+		{@render options(false)}
+	</Popover>
+{/if}
