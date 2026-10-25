@@ -31,3 +31,7 @@ export {
 	type LanguageOption,
 	type LanguageSelectorProps
 } from './components/blocks/language-selector/index.js';
+export {
+	BreakpointIndicator,
+	type BreakpointIndicatorProps
+} from './components/blocks/breakpoint-indicator/index.js';
