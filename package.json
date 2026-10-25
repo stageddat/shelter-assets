@@ -1,6 +1,14 @@
 {
 	"name": "shelter-assets",
-	"version": "0.0.1",
+	"version": "0.1.0",
+	"description": "shelter.cat assets",
+	"license": "AGPL-3.0-only",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/stageddat/shelter-assets.git"
+	},
+	"homepage": "https://shelter.cat",
+	"bugs": "https://github.com/stageddat/shelter-assets/issues",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run prepack",
@@ -84,5 +92,8 @@
 	},
 	"keywords": [
 		"svelte"
-	]
+	],
+	"publishConfig": {
+		"access": "public"
+	}
 }
