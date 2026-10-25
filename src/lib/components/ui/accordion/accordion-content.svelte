@@ -14,7 +14,7 @@
 </script>
 
 <!-- like shadcn, `class` goes on the inner div -->
-<div data-slot="accordion-content" class="overflow-hidden text-sm" {...restProps}>
+<div data-slot="accordion-content" class="overflow-hidden text-base" {...restProps}>
 	<div class={cn('pt-0 pb-4 [&_a]:link [&_p:not(:last-child)]:mb-4', className)}>
 		{@render children()}
 	</div>
