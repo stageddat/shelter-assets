@@ -1,5 +1,6 @@
 <script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import { fn } from 'storybook/test';
 	import { LanguageSelector, type LanguageOption, type LanguageSelectorProps } from './index.js';
 
 	const languages: LanguageOption[] = [
@@ -51,3 +52,12 @@
 		<div class="flex max-w-xs flex-col gap-2 p-4"><LanguageSelector {...args} /></div>
 	{/snippet}
 </Story>
+
+<!-- sin href (la app guarda el idioma en localStorage): botones que llaman a onselect (ver Actions) -->
+<Story
+	name="Without links (app)"
+	args={{
+		languages: languages.map((language) => ({ ...language, href: undefined })),
+		onselect: fn()
+	}}
+/>

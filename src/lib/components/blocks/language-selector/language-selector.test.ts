@@ -73,4 +73,27 @@ describe('LanguageSelector', () => {
 		expect(details.querySelector('summary')?.textContent).toContain('català');
 		expect([...details.querySelectorAll('a')].map((link) => link.lang)).toEqual(['en', 'ca', 'es']);
 	});
+
+	it('without href: options are buttons that call onselect and close the list', () => {
+		const chosen: string[] = [];
+		component = mount(LanguageSelector, {
+			target: document.body,
+			props: {
+				current: 'ca',
+				languages: languages.map((language) => ({ ...language, href: undefined })),
+				onselect: (locale: string) => chosen.push(locale)
+			}
+		});
+		flushSync();
+		expect(document.querySelector('a')).toBeNull();
+		const panel = document.querySelector<HTMLElement>('[popover]')!;
+		panel.showPopover();
+		const buttons = [...panel.querySelectorAll('button')];
+		expect(buttons.map((button) => button.lang)).toEqual(['en', 'ca', 'es']);
+		expect(panel.querySelector('[aria-current]')?.getAttribute('lang')).toBe('ca');
+
+		buttons[2].click();
+		expect(chosen).toEqual(['es']);
+		expect(panel.matches(':popover-open')).toBe(false);
+	});
 });

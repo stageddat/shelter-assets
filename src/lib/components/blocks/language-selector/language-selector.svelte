@@ -1,5 +1,7 @@
 <!--
-	Language menu with no JavaScript: every option is a link to the same page in another language.
+	Language menu. With `href`, every option is a link to the same page in another language and it
+	needs no JavaScript (sites with one URL per language). Without `href`, options are buttons that
+	call `onselect` (apps that keep the language somewhere else, e.g. localStorage).
 	It doesn't know about any i18n library; each site passes its languages, links and texts.
 -->
 <script lang="ts" module>
@@ -10,8 +12,8 @@
 		locale: string;
 		/** Name in its own language: 'english', 'español'... */
 		label: string;
-		/** The current page in this language */
-		href: string;
+		/** The current page in this language; without it the option is a button that calls `onselect` */
+		href?: string;
 		/** Translated by the team; the rest are translated by the community */
 		official: boolean;
 	};
@@ -19,6 +21,8 @@
 	export type LanguageSelectorProps = {
 		current: string;
 		languages: LanguageOption[];
+		/** Called when an option without `href` is chosen */
+		onselect?: (locale: string) => void;
 		/** Translated texts; missing ones are in English */
 		labels?: { language?: string; official?: string; community?: string };
 		/**
@@ -42,6 +46,7 @@
 	let {
 		current,
 		languages,
+		onselect,
 		labels = {},
 		variant = 'popover',
 		align = 'end',
@@ -63,13 +68,27 @@
 	// unique per instance and the same in the server HTML and in the browser
 	const id = $props.id();
 
+	const optionClass =
+		'flex w-full items-center gap-2 rounded-sm px-3 py-2 text-left hover:bg-accent [&[aria-current]]:font-semibold';
+
 	const currentLabel = $derived(languages.find((l) => l.locale === current)?.label ?? current);
+
+	function select(event: MouseEvent, locale: string) {
+		onselect?.(locale);
+		// a link leaves the page; a button doesn't, so close the list (popover variant) by hand
+		(event.currentTarget as HTMLElement).closest<HTMLElement>('[popover]')?.hidePopover();
+	}
 </script>
 
 {#snippet currentLanguage()}
 	<Languages />
 	<span class="sr-only">{labels.language ?? 'language'}:</span>
 	<span lang={current}>{currentLabel}</span>
+{/snippet}
+
+{#snippet option(language: LanguageOption)}
+	<Check aria-hidden="true" class={['size-4', language.locale !== current && 'invisible']} />
+	{language.label}
 {/snippet}
 
 {#snippet list()}
@@ -79,19 +98,27 @@
 		<ul aria-labelledby="{id}-group-{i}" class="mb-1">
 			{#each group.items as language (language.locale)}
 				<li>
-					<a
-						href={language.href}
-						hreflang={language.locale}
-						lang={language.locale}
-						aria-current={language.locale === current ? 'page' : undefined}
-						class="flex items-center gap-2 rounded-sm px-3 py-2 hover:bg-accent aria-[current=page]:font-semibold"
-					>
-						<Check
-							aria-hidden="true"
-							class={['size-4', language.locale !== current && 'invisible']}
-						/>
-						{language.label}
-					</a>
+					{#if language.href}
+						<a
+							href={language.href}
+							hreflang={language.locale}
+							lang={language.locale}
+							aria-current={language.locale === current ? 'page' : undefined}
+							class={optionClass}
+						>
+							{@render option(language)}
+						</a>
+					{:else}
+						<button
+							type="button"
+							lang={language.locale}
+							aria-current={language.locale === current ? 'true' : undefined}
+							class={optionClass}
+							onclick={(event) => select(event, language.locale)}
+						>
+							{@render option(language)}
+						</button>
+					{/if}
 				</li>
 			{/each}
 		</ul>
