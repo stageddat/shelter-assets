@@ -21,6 +21,17 @@ export {
 	type AccordionType
 } from './components/ui/accordion/index.js';
 
+export { Input } from './components/ui/input/index.js';
+export { Textarea } from './components/ui/textarea/index.js';
+export {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupButton,
+	InputGroupInput,
+	InputGroupText,
+	InputGroupTextarea
+} from './components/ui/input-group/index.js';
+
 export {
 	initThemeSelectors,
 	ThemeSelector,

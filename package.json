@@ -1,6 +1,6 @@
 {
 	"name": "shelter-assets",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "shelter.cat assets",
 	"license": "AGPL-3.0-only",
 	"repository": {
@@ -40,11 +40,21 @@
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js"
 		},
+		"./interactive": {
+			"types": "./dist/interactive.d.ts",
+			"svelte": "./dist/interactive.js"
+		},
 		"./styles.css": "./dist/styles/index.css",
 		"./fonts/*": "./dist/fonts/*"
 	},
 	"peerDependencies": {
+		"bits-ui": "^2.19.5",
 		"svelte": "^5.0.0"
+	},
+	"peerDependenciesMeta": {
+		"bits-ui": {
+			"optional": true
+		}
 	},
 	"dependencies": {
 		"@lucide/svelte": "^1.59.0",
@@ -71,6 +81,7 @@
 		"@types/node": "^24",
 		"@vitest/browser-playwright": "latest",
 		"@vitest/coverage-v8": "latest",
+		"bits-ui": "^2.20.2",
 		"eslint": "^10.4.1",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-storybook": "^10.6.0",
